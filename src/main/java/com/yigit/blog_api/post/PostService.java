@@ -42,4 +42,10 @@ public class PostService {
     public List<PostResponse> getAllPosts() {
         return postRepository.findAll().stream().map(postMapper::toResponse).toList();
     }
+
+    @Transactional
+    public void deletePost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
+        postRepository.delete(post);
+    }
 }

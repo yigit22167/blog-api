@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -42,6 +43,12 @@ public class PostController {
     public ResponseEntity<List<PostResponse>> getAllPosts() {
         List<PostResponse> postResponses = postService.getAllPosts();
         return ResponseEntity.ok(postResponses);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+        postService.deletePost(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
