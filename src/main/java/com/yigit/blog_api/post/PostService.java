@@ -1,7 +1,9 @@
 package com.yigit.blog_api.post;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,6 +11,7 @@ import com.yigit.blog_api.common.exception.PostNotFoundException;
 import com.yigit.blog_api.common.exception.SlugAlreadyExistsException;
 import com.yigit.blog_api.post.dto.CreatePostRequest;
 import com.yigit.blog_api.post.dto.PostResponse;
+import com.yigit.blog_api.post.dto.UpdatePostRequest;
 
 @Service
 public class PostService {
@@ -28,6 +31,48 @@ public class PostService {
         }
 
         Post post = postMapper.toEntity(request);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        post.setCreatedAt(now);
+        post.setUpdatedAt(now);
+
+        if (request.status() == PostStatus.PUBLISHED)
+            post.setPublishedAt(now);
+
+        Post savedPost = postRepository.save(post);
+
+        return postMapper.toResponse(savedPost);
+    }
+
+    @Transactional
+    public PostResponse updatePost(Long id, UpdatePostRequest request) {
+
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException(id));
+
+        if (!post.getSlug().equals(request.slug())
+                && postRepository.existsBySlug(request.slug())) {
+            throw new SlugAlreadyExistsException(request.slug());
+        }
+
+        PostStatus oldStatus = post.getStatus();
+        PostStatus newStatus = request.status();
+
+        postMapper.updateEntity(post, request);
+
+        if (oldStatus == PostStatus.DRAFT
+                && newStatus == PostStatus.PUBLISHED) {
+            post.setPublishedAt(LocalDateTime.now());
+        }
+
+        if (oldStatus == PostStatus.PUBLISHED
+                && newStatus == PostStatus.DRAFT) {
+            post.setPublishedAt(null);
+        }
+
+        post.setStatus(newStatus);
+
         Post savedPost = postRepository.save(post);
 
         return postMapper.toResponse(savedPost);

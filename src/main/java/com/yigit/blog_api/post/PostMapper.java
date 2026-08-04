@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.yigit.blog_api.post.dto.CreatePostRequest;
 import com.yigit.blog_api.post.dto.PostResponse;
+import com.yigit.blog_api.post.dto.UpdatePostRequest;
 
 @Component
 public class PostMapper {
@@ -35,13 +36,15 @@ public class PostMapper {
         post.setCoverImageUrl(request.coverImageUrl());
         post.setStatus(request.status());
 
-        post.setCreatedAt(LocalDateTime.now());
-        post.setUpdatedAt(LocalDateTime.now());
-
-        if (request.status() == PostStatus.PUBLISHED) {
-            post.setPublishedAt(LocalDateTime.now());
-        }
-
         return post;
+    }
+
+    public void updateEntity(Post post, UpdatePostRequest request) {
+        post.setTitle(request.title());
+        post.setSlug(request.slug());
+        post.setSummary(request.summary());
+        post.setContent(request.content());
+        post.setCoverImageUrl(request.coverImageUrl());
+        post.setUpdatedAt(LocalDateTime.now());
     }
 }

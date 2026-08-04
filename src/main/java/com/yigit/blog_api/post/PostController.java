@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yigit.blog_api.post.dto.CreatePostRequest;
 import com.yigit.blog_api.post.dto.PostResponse;
+import com.yigit.blog_api.post.dto.UpdatePostRequest;
 
 import jakarta.validation.Valid;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -31,6 +33,13 @@ public class PostController {
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody CreatePostRequest request) {
         PostResponse postResponse = postService.createPost(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(postResponse);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id,
+            @Valid @RequestBody UpdatePostRequest request) {
+        PostResponse postResponse = postService.updatePost(id, request);
+        return ResponseEntity.ok(postResponse);
     }
 
     @GetMapping("/{id}")
