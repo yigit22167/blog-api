@@ -8,24 +8,17 @@ import jakarta.validation.constraints.Size;
 
 public record CreatePostRequest(
 
-    @NotBlank
-    @Size(max = 150)
-    String title,
+        @NotBlank(message = "Title is required.") @Size(max = 150) String title,
 
-    @NotBlank
-    @Size(max = 180)
-    String slug,
+        @NotBlank(message = "Slug is required.") @Size(max = 180) String slug,
 
-    @NotBlank
-    @Size(max = 300)
-    String summary,
+        @NotBlank(message = "Summary is required.") @Size(max = 300) String summary,
 
-    @NotBlank
-    String content,
+        @NotBlank(message = "Content is required.") String content,
 
-    String coverImageUrl,
+        String coverImageUrl,
 
-    @NotNull
-    PostStatus status
+        @NotNull(message = "Status is required.") PostStatus status
 
-) {}
+) {
+}

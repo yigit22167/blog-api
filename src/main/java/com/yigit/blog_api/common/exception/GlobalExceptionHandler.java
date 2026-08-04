@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -35,6 +36,29 @@ public class GlobalExceptionHandler {
                                 request.getRequestURI(),
                                 LocalDateTime.now());
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                .body(error);
+        }
+
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ApiError> handleValidationException(
+                        MethodArgumentNotValidException ex,
+                        HttpServletRequest request) {
+                String message = ex.getBindingResult()
+                                .getFieldErrors()
+                                .stream()
+                                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                                .findFirst()
+                                .orElse("Validation failed.");
+
+                ApiError error = new ApiError(
+                                HttpStatus.BAD_REQUEST.value(),
+                                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                message,
+                                request.getRequestURI(),
+                                LocalDateTime.now());
+
+                return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
                                 .body(error);
         }
 
