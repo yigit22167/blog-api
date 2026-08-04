@@ -1,6 +1,5 @@
 package com.yigit.blog_api.post;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
