@@ -1,15 +1,16 @@
 package com.yigit.blog_api.post;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yigit.blog_api.common.exception.PostNotFoundException;
 import com.yigit.blog_api.common.exception.SlugAlreadyExistsException;
 import com.yigit.blog_api.post.dto.CreatePostRequest;
+import com.yigit.blog_api.post.dto.PagedResponse;
 import com.yigit.blog_api.post.dto.PostResponse;
 import com.yigit.blog_api.post.dto.UpdatePostRequest;
 
@@ -83,8 +84,11 @@ public class PostService {
         return postMapper.toResponse(post);
     }
 
-    public List<PostResponse> getAllPosts() {
-        return postRepository.findAll().stream().map(postMapper::toResponse).toList();
+    public PagedResponse<PostResponse> getAllPosts(Pageable pageable) {
+        Page<PostResponse> page = postRepository.findAll(pageable)
+                .map(postMapper::toResponse);
+
+        return postMapper.toPagedResponse(page);
     }
 
     @Transactional

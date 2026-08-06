@@ -2,9 +2,11 @@ package com.yigit.blog_api.post;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import com.yigit.blog_api.post.dto.CreatePostRequest;
+import com.yigit.blog_api.post.dto.PagedResponse;
 import com.yigit.blog_api.post.dto.PostResponse;
 import com.yigit.blog_api.post.dto.UpdatePostRequest;
 
@@ -46,5 +48,16 @@ public class PostMapper {
         post.setContent(request.content());
         post.setCoverImageUrl(request.coverImageUrl());
         post.setUpdatedAt(LocalDateTime.now());
+    }
+
+    public PagedResponse<PostResponse> toPagedResponse(Page<PostResponse> posts) {
+        return new PagedResponse<>(
+                posts.getContent(),
+                posts.getNumber(),
+                posts.getSize(),
+                posts.getTotalElements(),
+                posts.getTotalPages(),
+                posts.isFirst(),
+                posts.isLast());
     }
 }

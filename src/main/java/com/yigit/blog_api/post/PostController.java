@@ -3,13 +3,12 @@ package com.yigit.blog_api.post;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yigit.blog_api.post.dto.CreatePostRequest;
+import com.yigit.blog_api.post.dto.PagedResponse;
 import com.yigit.blog_api.post.dto.PostResponse;
 import com.yigit.blog_api.post.dto.UpdatePostRequest;
 
 import jakarta.validation.Valid;
-
-import java.util.List;
-
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,8 +48,8 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
-        List<PostResponse> postResponses = postService.getAllPosts();
+    public ResponseEntity<PagedResponse<PostResponse>> getAllPosts(Pageable pageable) {
+        PagedResponse<PostResponse> postResponses = postService.getAllPosts(pageable);
         return ResponseEntity.ok(postResponses);
     }
 
